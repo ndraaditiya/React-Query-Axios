@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const url = 'https://odd-blue-yak-slip.cyclic.app/'
+const url = 'https://calm-plum-jaguar-tutu.cyclic.app/'
 
 export const API = axios.create({
   baseURL: url
 })
 
-export const getAllTodosFn = async () => {
-  const res = await API.get('todos')
+export const getAllTodosFn = async (signal) => {
+  const res = await API.get('todos', { signal })
   return res.data
 }
 

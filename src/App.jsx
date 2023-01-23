@@ -10,7 +10,7 @@ function App() {
 
   const { isLoading, isError, error, data: todos } = useQuery({
     queryKey: ['todos'],
-    queryFn: getAllTodosFn,
+    queryFn: ({ signal }) => getAllTodosFn(signal),
     select: (data) => data?.data
   })
 
