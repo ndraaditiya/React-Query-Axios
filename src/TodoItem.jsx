@@ -1,42 +1,38 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteTodoFn, updateTodoFn } from './api'
+import { useDelteTodo, useUpdateTodo } from './services'
 
 const TodoItem = ({ _id, todoName, isComplete }) => {
-  const queryClient = useQueryClient()
-  const { mutate: deleteTodo } = useMutation(
-    (id) => deleteTodoFn(id),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['todos'])
-      }
-    }
-  )
+  const {
+    isUpdating,
+    isErrorUpdating,
+    errorUpdating,
+    UpdateTodo
+  } = useUpdateTodo()
 
-  const { isLoading, mutate: updateTodo } = useMutation(
-    ({ id, data }) => updateTodoFn({ id, data }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['todos'])
-      }
-    }
-  )
+  const {
+    isDeleting,
+    isErrorDeleting,
+    errorDeleting,
+    DeleteTodo
+  } = useDelteTodo()
 
   const handleUpdateTodo = (id, isComplete) => {
     const data = { isComplete: !isComplete }
-    updateTodo({ id, data })
+    UpdateTodo({ id, data })
   }
 
   return (
     <>
       <p className='contents'>
-        {isLoading ? (
-          <span>Loading...</span>
+        {isUpdating || isErrorUpdating ? (
+          <span>{isUpdating ? 'Updating...' : errorUpdating}</span>
+        ) : isDeleting || isErrorDeleting ? (
+          <span>{isDeleting ? 'Deleting...' : errorDeleting}</span>
         ) : (
           <>
             <span style={{ textDecoration: isComplete ? 'line-through' : 'none' }}>{todoName}</span>
             <span>
               <input type='checkbox' checked={isComplete ? true : false} onChange={() => handleUpdateTodo(_id, isComplete)} />
-              <i className="fa-solid fa-trash" onClick={() => deleteTodo(_id)}></i>
+              <i className="fa-solid fa-trash" onClick={() => DeleteTodo(_id)}></i>
             </span>
           </>
         )}

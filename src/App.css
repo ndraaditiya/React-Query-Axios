@@ -1,3 +1,7 @@
+.App p {
+  text-align: center;
+}
+
 .input-form {
   display: flex;
   justify-content: center;

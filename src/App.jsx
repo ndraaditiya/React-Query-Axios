@@ -1,32 +1,21 @@
-import React, { useRef } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getAllTodosFn, postTodoFn } from './api'
+import { useRef } from 'react'
+import { useGetTodos, usePostTodo } from './services'
 import TodoItem from './TodoItem'
 import './App.css'
 
 function App() {
+
   const inputRef = useRef()
-  const queryClient = useQueryClient()
+  const { todos, isLoading, isError, error } = useGetTodos()
+  const {
+    isCreating,
+    isSuccessCreating,
+    isErrorCreating,
+    errorCreateing,
+    CreateTodo
+  } = usePostTodo()
 
-  const { isLoading, isError, error, data: todos } = useQuery({
-    queryKey: ['todos'],
-    queryFn: ({ signal }) => getAllTodosFn(signal),
-    select: (data) => data?.data
-  })
-
-  const { isLoading: isLoadingAddTodo, mutate: addTodo } = useMutation(
-    (data) => postTodoFn(data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['todos'])
-        inputRef.current.value = ''
-      }
-    }
-  )
-
-  if (isLoading) return 'Loading...'
-
-  if (isError) return `${error.message}`
+  if (isSuccessCreating) inputRef.current.value = ''
 
   const handleAddTodo = () => {
     const data = {
@@ -34,21 +23,25 @@ function App() {
       isComplete: false
     }
 
-    addTodo(data)
+    CreateTodo(data)
   }
 
   return (
-    <div>
+    <div className='App'>
       <h2>TODO APP</h2>
       <div className='input-form'>
         <span>
           <input type='text' ref={inputRef} />
           <button onClick={handleAddTodo}>Add Todo</button>
         </span>
+        {isErrorCreating && <p>{errorCreateing.message}</p>}
       </div>
+      {isLoading && <p>Loading...</p>}
+      {isError && <p>{error.message}</p>}
       <div className='content-container'>
         {todos && todos.map((todo, i) => <TodoItem key={i} {...todo} />)}
       </div>
+      {isCreating && <p>Loading..</p>}
     </div>
   )
 }
