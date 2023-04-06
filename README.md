@@ -1,7 +1,7 @@
 # React-Query-Axios
 ### Simple CRUD Todo App With React Query and Axios
 
-You can see the app on: **https://react-query-axios.vercel.app/**
+You can see the app on: **https://react-query-axios.netlify.app/**
 
 This just for you who currently trying to understanding React-Query, this a simple example how to use React-Query on GET, POST, PUT and DELETE endpoint and integrated with Axios..
 
